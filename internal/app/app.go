@@ -3,7 +3,6 @@ package app
 import (
 	"go-worker/internal/config"
 	"go-worker/internal/health"
-	"go-worker/internal/pkg/logger"
 	productController "go-worker/internal/product/controller"
 	productService "go-worker/internal/product/service"
 	"go-worker/internal/server"
@@ -11,6 +10,7 @@ import (
 	"go-worker/internal/storage/sql"
 	"go-worker/internal/storage/sql/migrate"
 	"go-worker/internal/storage/sql/sqlc"
+	"go-worker/pkg/logger"
 
 	"go.uber.org/fx"
 )
