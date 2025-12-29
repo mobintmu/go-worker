@@ -8,8 +8,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-worker/internal/job"
-	"go-worker/internal/worker"
+	"go-worker/internal/poller/job"
+	"go-worker/internal/poller/worker"
 	"sync"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-worker/internal/job"
+	"go-worker/internal/poller/job"
 	"sync"
 	"testing"
 	"time"

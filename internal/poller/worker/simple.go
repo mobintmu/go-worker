@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"go-worker/internal/job"
+	"go-worker/internal/poller/job"
 )
 
 type SimpleWorker struct {
