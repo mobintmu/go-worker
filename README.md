@@ -60,7 +60,7 @@ docker run --name sonarqube \
 
 
 go test -coverpkg=./... -coverprofile=coverage.out ./test
-
+go test -v ./test | grep FAIL
 go test ./... -json > report.json
 
 go tool cover -func=coverage.out
