@@ -3,6 +3,8 @@ package app
 import (
 	"go-worker/internal/config"
 	"go-worker/internal/health"
+	"go-worker/internal/poller"
+	"go-worker/internal/poller/dispatcher"
 	productController "go-worker/internal/product/controller"
 	productService "go-worker/internal/product/service"
 	"go-worker/internal/server"
@@ -38,8 +40,19 @@ func NewApp() *fx.App {
 			productController.NewGRPC,
 			//service
 			productService.New,
+			// dispatcher
+			dispatcher.New,
+			poller.New,
 		),
 		fx.Invoke(
+			// dispatcher
+			dispatcher.RegisterServices,
+			dispatcher.RegisterLifecycle,
+
+			// poller
+			poller.RegisterLifecycle,
+
+			//server
 			server.RegisterRoutes,
 			server.StartHTTPServer,
 			server.StartGRPCServer,

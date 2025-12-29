@@ -11,6 +11,8 @@ import (
 	"go-worker/internal/poller/job"
 	"go-worker/internal/poller/worker"
 	"sync"
+
+	"go.uber.org/fx"
 )
 
 type Dispatcher interface {
@@ -112,4 +114,24 @@ func (d *Service) Stop() {
 	for _, q := range d.queues {
 		close(q)
 	}
+}
+
+func RegisterLifecycle(lc fx.Lifecycle, d *Service) {
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			fmt.Println("starting dispatcher...")
+			d.Start()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			fmt.Println("stopping dispatcher...")
+			d.Stop()
+			return nil
+		},
+	})
+}
+
+func RegisterServices(d *Service) {
+	// Example services
+	d.Register("email", 5, 100)
 }
