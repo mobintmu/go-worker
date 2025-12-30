@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-worker/internal/example"
 	"go-worker/internal/poller/dispatcher"
+	"log"
 	"time"
 
 	"go.uber.org/fx"
@@ -22,23 +23,26 @@ Fx App
 */
 
 type Poller struct {
-	dispatcher *dispatcher.Service
-	interval   time.Duration
+	Dispatcher *dispatcher.Service
+	Interval   time.Duration
 	ctx        context.Context
 	cancel     context.CancelFunc
+	OnTick     func(context.Context)
 }
 
 func New(
 	dispatcher *dispatcher.Service,
 ) *Poller {
-	return &Poller{
-		dispatcher: dispatcher,
-		interval:   2 * time.Second, // configurable
+	p := &Poller{
+		Dispatcher: dispatcher,
+		Interval:   500 * time.Microsecond,
 	}
+	p.OnTick = p.DefaultTick // default behavior
+	return p
 }
 
 func (p *Poller) Run(ctx context.Context) {
-	ticker := time.NewTicker(p.interval)
+	ticker := time.NewTicker(p.Interval)
 	defer ticker.Stop()
 
 	for {
@@ -48,21 +52,21 @@ func (p *Poller) Run(ctx context.Context) {
 			return
 
 		case <-ticker.C:
-			p.tick(ctx)
+			p.OnTick(ctx)
 		}
 	}
 }
 
-func (p *Poller) tick(ctx context.Context) {
+func (p *Poller) DefaultTick(ctx context.Context) {
 	// Example condition (replace with DB/cache logic)
-	fmt.Println("tick running ...")
+	log.Println("DefaultTick is running ...")
 	if !p.conditionMet(ctx) {
 		return
 	}
 
 	j := example.NewExampleJob("job-123", "email")
 
-	_ = p.dispatcher.Dispatch(j)
+	_ = p.Dispatcher.Dispatch(j)
 }
 
 func (p *Poller) conditionMet(ctx context.Context) bool {
